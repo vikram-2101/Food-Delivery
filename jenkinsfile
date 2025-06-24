@@ -14,7 +14,7 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                dir('client') {
+                dir('Frontend') {
                     sh 'npm install'
                     sh 'npm run build'
                 }
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Build Backend') {
             steps {
-                dir('server') {
+                dir('Backend') {
                     sh 'npm install'
                 }
             }
@@ -31,7 +31,7 @@ pipeline {
 
         stage('Test Frontend') {
             steps {
-                dir('client') {
+                dir('Frontend') {
                     sh 'npm test || echo "⚠️ Frontend tests failed (but continuing)"'
                 }
             }
@@ -39,7 +39,7 @@ pipeline {
 
         stage('Test Backend') {
             steps {
-                dir('server') {
+                dir('Backend') {
                     sh 'npm test || echo "⚠️ Backend tests failed (but continuing)"'
                 }
             }
@@ -47,7 +47,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                dir('server') {
+                dir('Backend') {
                     sh 'pm2 delete mern-app || true'
                     sh 'pm2 start index.js --name mern-app'
                 }
