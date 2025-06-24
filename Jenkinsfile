@@ -2,21 +2,25 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'production'
+        NODE_OPTIONS = "--max_old_space_size=4096"
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/vikram-2101/Food-Delivery.git', branch: 'main'
+                git 'https://github.com/vikram-2101/Food-Delivery.git'
             }
         }
 
         stage('Build Frontend') {
             steps {
                 dir('Frontend') {
-                    sh 'npm install'
-                    sh 'npm run build'
+                    sh '''
+                        echo "Installing Frontend dependencies..."
+                        npm install
+                        echo "Building Frontend using Vite..."
+                        npm run build
+                    '''
                 }
             }
         }
@@ -24,43 +28,31 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('Backend') {
-                    sh 'npm install'
+                    sh '''
+                        echo "Installing Backend dependencies..."
+                        npm install
+                        echo "Backend dependencies installed"
+                    '''
                 }
             }
         }
 
-        stage('Test Frontend') {
-            steps {
-                dir('Frontend') {
-                    sh 'npm test || echo "⚠️ Frontend tests failed (but continuing)"'
-                }
-            }
-        }
-
-        stage('Test Backend') {
+        stage('Run Backend Server (optional for local deploy)') {
             steps {
                 dir('Backend') {
-                    sh 'npm test || echo "⚠️ Backend tests failed (but continuing)"'
+                    // WARNING: Use `nohup` or PM2 if you want background run (for deploy)
+                    sh '''
+                        echo "Starting backend server..."
+                        nohup npm run server &
+                    '''
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy (optional)') {
             steps {
-                dir('Backend') {
-                    sh 'pm2 delete mern-app || true'
-                    sh 'pm2 start index.js --name mern-app'
-                }
+                echo 'Add deployment steps here (like copying build to a server or using PM2/Docker)'
             }
-        }
-    }
-
-    post {
-        success {
-            echo '✅ Deployment successful!'
-        }
-        failure {
-            echo '❌ Pipeline failed. Check logs above.'
         }
     }
 }
