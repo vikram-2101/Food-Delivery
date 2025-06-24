@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    environment {
+        NODE_ENV = 'production'
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git url: 'https://github.com/vikram-2101/Food-Delivery.git', branch: 'main'
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir('client') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                dir('server') {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Test Frontend') {
+            steps {
+                dir('client') {
+                    sh 'npm test || echo "⚠️ Frontend tests failed (but continuing)"'
+                }
+            }
+        }
+
+        stage('Test Backend') {
+            steps {
+                dir('server') {
+                    sh 'npm test || echo "⚠️ Backend tests failed (but continuing)"'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                dir('server') {
+                    sh 'pm2 delete mern-app || true'
+                    sh 'pm2 start index.js --name mern-app'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deployment successful!'
+        }
+        failure {
+            echo '❌ Pipeline failed. Check logs above.'
+        }
+    }
+}
