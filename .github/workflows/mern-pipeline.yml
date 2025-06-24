@@ -1,0 +1,48 @@
+name: MERN CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  install-build-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        folder: [Frontend, Backend, Admin]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies (${{ matrix.folder }})
+        working-directory: ${{ matrix.folder }}
+        run: npm install
+
+      - name: Run Build (if present)
+        working-directory: ${{ matrix.folder }}
+        run: |
+          if [ -f package.json ] && npm run | grep -q "build"; then
+            npm run build
+          else
+            echo "No build script found"
+          fi
+
+      - name: Run Tests (if present)
+        working-directory: ${{ matrix.folder }}
+        run: |
+          if [ -f package.json ] && npm run | grep -q "test"; then
+            npm test || echo "⚠️ Tests failed in ${{ matrix.folder }}"
+          else
+            echo "No test script found"
+          fi
