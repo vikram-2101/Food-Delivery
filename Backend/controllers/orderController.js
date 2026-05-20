@@ -85,11 +85,24 @@ const userOrders = async (req, res) => {
   }
 };
 
-// list of orders for admin panel
+// list of orders for admin panel (sorted by date using date index)
 
 const listOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({});
+    const orders = await orderModel.find({}).sort({ date: -1 });
+    res.json({ success: true, data: orders });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+// filter orders by status (uses status index)
+const ordersByStatus = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find({ status: req.body.status })
+      .sort({ date: -1 });
     res.json({ success: true, data: orders });
   } catch (error) {
     console.log(error);
@@ -111,4 +124,4 @@ const updateStatus = async (req, res) => {
   }
 };
 
-export { placeOrder, verifyOrder, userOrders, listOrders, updateStatus };
+export { placeOrder, verifyOrder, userOrders, listOrders, ordersByStatus, updateStatus };

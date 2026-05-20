@@ -36,7 +36,7 @@ const registerUser = async (req, res) => {
   const { name, password, email } = req.body;
   // if (!name || !password || !email) {
   //   return res.status(400).json({
-  //     message: "Please fill all the fields",
+  //     message: "Please fill all the fields", 
   //   });
   // }
   try {

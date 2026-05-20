@@ -23,6 +23,11 @@ const foodSchema = new mongoose.Schema({
   },
 });
 
+// Add indexes for better query performance
+foodSchema.index({ category: 1 });
+foodSchema.index({ name: 1 });
+foodSchema.index({ price: 1 });
+
 const foodModel = mongoose.model.food || mongoose.model("food", foodSchema);
 
 export default foodModel;

@@ -10,6 +10,12 @@ const orderSchema = new mongoose.Schema({
   payment: { type: Boolean, default: false },
 });
 
+// Add indexes for better query performance
+orderSchema.index({ userId: 1 });
+orderSchema.index({ status: 1 });
+orderSchema.index({ date: -1 });
+orderSchema.index({ userId: 1, date: -1 });
+
 const orderModel =
   mongoose.models.order || mongoose.model("order", orderSchema);
 

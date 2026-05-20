@@ -49,4 +49,28 @@ const removeFood = async (req, res) => {
   }
 };
 
-export { addFood, listFood, removeFood };
+// filter food by category (uses category index)
+const foodByCategory = async (req, res) => {
+  try {
+    const foods = await foodModel.find({ category: req.body.category });
+    res.json({ success: true, data: foods });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+// search food by name (uses name index)
+const searchFood = async (req, res) => {
+  try {
+    const foods = await foodModel.find({
+      name: { $regex: req.body.search, $options: "i" },
+    });
+    res.json({ success: true, data: foods });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error" });
+  }
+};
+
+export { addFood, listFood, removeFood, foodByCategory, searchFood };
