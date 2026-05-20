@@ -38,7 +38,7 @@ const placeOrder = async (req, res) => {
         product_data: {
           name: "Delivery Charges",
         },
-        unit_item: 2 * 100 * 84,
+        unit_amount: 2 * 100 * 84,
       },
       quantity: 1,
     });
@@ -50,7 +50,7 @@ const placeOrder = async (req, res) => {
       cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
     });
 
-    res.json({ success: true, session_url: session_url });
+    res.json({ success: true, session_url: session.url });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: "Error" });

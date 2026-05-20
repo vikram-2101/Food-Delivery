@@ -48,7 +48,7 @@ const PlaceOrder = () => {
       const { session_url } = response.data;
       window.location.replace(session_url);
     } else {
-      toast.success("order placed");
+      toast.error("Error placing order");
     }
   };
 
@@ -165,7 +165,7 @@ const PlaceOrder = () => {
             </div>
             <hr />
           </div>
-          <button type="submit" onClick={() => alert("order placed")}>
+          <button type="submit">
             PROCEED TO PAYMENT
           </button>
         </div>
